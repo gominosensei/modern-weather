@@ -31,8 +31,7 @@
             "defName": "IMAGE_BACKGROUND",
             "type": "png",
             "file": "images/modern_background_new.png"
-        }
-
+        },
         {
             "defName": "ICON_WIND",
             "type": "png",
