@@ -19,9 +19,14 @@ static uint8_t WEATHER_ICONS[] = {
 };
 
 void weather_layer_init(WeatherLayer* weather_layer, GPoint pos) {
-	layer_init(&weather_layer->layer, GRect(pos.x, pos.y, 144, 68));
+	layer_init(&weather_layer->layer, GRect(pos.x, pos.y, 144, 168));
 	// Add temperature layer
-	text_layer_init(&weather_layer->temp_layer, GRect(70, 9, 64, 68));
+	int temp_width = 64;   // *msd+5 7/3/13
+	int temp_height = 68;
+	int temp_x = (144 / 2) - (temp_width / 2);
+	int temp_y = (168 / 4) - (temp_height / 2);
+	text_layer_init(&weather_layer->temp_layer, GRect(temp_x, temp_y, temp_width, temp_height));
+//	text_layer_init(&weather_layer->temp_layer, GRect(70, 9, 64, 68));
 	text_layer_set_text_alignment(&weather_layer->temp_layer, GTextAlignmentCenter);
 	text_layer_set_font(&weather_layer->temp_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FUTURA_40)));
 	layer_add_child(&weather_layer->layer, &weather_layer->temp_layer.layer);
@@ -29,7 +34,12 @@ void weather_layer_init(WeatherLayer* weather_layer, GPoint pos) {
 	weather_layer->has_weather_icon = false;
 	
 	// Set up the precipitation forecast
-	graph_layer_init(&weather_layer->graph_layer, GRect(10, 10, 60, 50));
+	int precip_width = 60;
+	int precip_height = 50;
+	int precip_x = (144 / 2) - (precip_width / 2);
+	int precip_y = (168 * 3 / 4) - (precip_height / 2);
+	graph_layer_init(&weather_layer->graph_layer, GRect(precip_x, precip_y, precip_width, precip_height));
+//	graph_layer_init(&weather_layer->graph_layer, GRect(10, 10, 60, 50));
 	graph_layer_set_max_value(&weather_layer->graph_layer, 255);
 	graph_layer_set_point_width(&weather_layer->graph_layer, 2);
 	graph_layer_set_axis_colour(&weather_layer->graph_layer, GColorBlack);
@@ -49,9 +59,14 @@ void weather_layer_set_icon(WeatherLayer* weather_layer, WeatherIcon icon) {
 			bmp_deinit_container(&weather_layer->icon_layer);
 			weather_layer->has_weather_icon = false;
 		}
+		int icon_width = 60;
+		int icon_height = 60;
+		int icon_x = (144 / 2) - (icon_width / 2);
+		int icon_y = (168 * 3 / 4) - (icon_height / 2);
 		bmp_init_container(WEATHER_ICONS[icon], &weather_layer->icon_layer);
 		layer_add_child(&weather_layer->layer, &weather_layer->icon_layer.layer.layer);
-		layer_set_frame(&weather_layer->icon_layer.layer.layer, GRect(10, 4, 60,60));
+		layer_set_frame(&weather_layer->icon_layer.layer.layer, GRect(icon_x, icon_y, icon_width, icon_height));
+//		layer_set_frame(&weather_layer->icon_layer.layer.layer, GRect(10, 4, 60,60));
 		weather_layer->has_weather_icon = true;
 	}
 	weather_layer->current_icon = icon;

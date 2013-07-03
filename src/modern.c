@@ -10,14 +10,8 @@
 #include "weather_layer.h"
 #include "constants.h"
 
-
-#define MY_UUID { 0x9B, 0x89, 0xF4, 0xB8, 0x2B, 0xEB, 0x4F, 0xBA, 0x9A, 0xE9, 0xAB, 0xA6, 0x6E, 0x45, 0xA7, 0xDA }
-PBL_APP_INFO(HTTP_UUID,
-             "Modern Weather", "gominosensei",
-             1, 0, /* App version */
-             RESOURCE_ID_IMAGE_MENU_ICON,
-             APP_INFO_WATCH_FACE);
-
+PBL_APP_INFO(HTTP_UUID, "Modern Weather", "gominosensei",
+             1, 1, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
 
 Window window;
 BmpContainer background_image_container;
@@ -398,6 +392,27 @@ void handle_init(AppContextRef ctx) {
 #endif
   layer_add_child(&window.layer, &background_image_container.layer.layer);
 
+
+	// Add weather layer
+//	weather_layer_init(&weather_layer, GPoint(0, 100));
+	weather_layer_init(&weather_layer, GPoint(0, 0));  // *msd 7/3/13
+	layer_add_child(&window.layer, &weather_layer.layer);
+	
+	http_register_callbacks((HTTPCallbacks){
+		.failure=failed,
+		.success=success,
+		.reconnect=reconnect,
+		.location=location
+	}, (void*)ctx);
+	
+	// Request weather
+	precip_forecast_index = -1;
+	located = false;
+	request_weather();
+	
+	
+	
+	
 #if DISPLAY_DATE_ANALOG
   date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ORBITRON_MEDIUM_12));
   text_layer_init(&date_layer, GRect(116, 77, 20, 20));
@@ -442,21 +457,6 @@ void handle_init(AppContextRef ctx) {
   layer_add_child(&window.layer, &second_display_layer);
 #endif
 	
-	// Add weather layer
-	weather_layer_init(&weather_layer, GPoint(0, 100));
-	layer_add_child(&window.layer, &weather_layer.layer);
-	
-	http_register_callbacks((HTTPCallbacks){
-		.failure=failed,
-		.success=success,
-		.reconnect=reconnect,
-		.location=location
-	}, (void*)ctx);
-	
-	// Request weather
-	precip_forecast_index = -1;
-	located = false;
-	request_weather();
 
 }
 
