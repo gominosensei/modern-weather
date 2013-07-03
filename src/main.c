@@ -1,3 +1,4 @@
+/*
 #include "pebble_os.h"
 #include "pebble_app.h"
 #include "pebble_fonts.h"
@@ -11,7 +12,7 @@
 #define MY_UUID { 0x91, 0x41, 0xB6, 0x28, 0xBC, 0x89, 0x49, 0x8E, 0xB1, 0x47, 0x04, 0x9F, 0x49, 0xC0, 0x99, 0xAD }
 PBL_APP_INFO(MY_UUID,
              "Weather Watch", "Katharine Berry",
-             1, 0, /* App version */
+             1, 0, 
              DEFAULT_MENU_ICON,
              APP_INFO_WATCH_FACE);
 
@@ -105,7 +106,7 @@ void location(float latitude, float longitude, float altitude, float accuracy, v
 void handle_init(AppContextRef ctx) {
 	resource_init_current_app(&APP_RESOURCES);
 	window_init(&window, "Weather Watch");
-	window_stack_push(&window, true /* Animated */);
+	window_stack_push(&window, true );
 	window_set_fullscreen(&window, true);
 	
 	// Add time layer.
@@ -185,3 +186,4 @@ void request_weather() {
 		return;
 	}
 }
+*/
