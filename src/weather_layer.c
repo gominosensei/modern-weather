@@ -47,10 +47,15 @@ void weather_layer_init(WeatherLayer* weather_layer, GPoint pos) {
 //	graph_layer_init(&weather_layer->graph_layer, GRect(10, 10, 60, 50));
 	graph_layer_set_max_value(&weather_layer->graph_layer, 255);
 	graph_layer_set_point_width(&weather_layer->graph_layer, 2);
-	graph_layer_set_axis_colour(&weather_layer->graph_layer, GColorBlack);
+	graph_layer_set_axis_colour(&weather_layer->graph_layer, GColorWhite);
+	graph_layer_set_graph_colour(&weather_layer->graph_layer, GColorWhite);
+	graph_layer_set_tick_colour(&weather_layer->graph_layer, GColorWhite);
+	graph_layer_set_background_colour(&weather_layer->graph_layer, GColorClear);
+/*	graph_layer_set_axis_colour(&weather_layer->graph_layer, GColorBlack);
 	graph_layer_set_graph_colour(&weather_layer->graph_layer, GColorBlack);
 	graph_layer_set_tick_colour(&weather_layer->graph_layer, GColorBlack);
 	graph_layer_set_background_colour(&weather_layer->graph_layer, GColorWhite);
+	*/
 	static uint8_t vticks[2] = {85, 171};
 	graph_layer_set_vertical_ticks(&weather_layer->graph_layer, vticks, ARRAY_LENGTH(vticks));
 	static uint8_t hticks[2] = {10, 20};
@@ -64,10 +69,18 @@ void weather_layer_set_icon(WeatherLayer* weather_layer, WeatherIcon icon) {
 			bmp_deinit_container(&weather_layer->icon_layer);
 			weather_layer->has_weather_icon = false;
 		}
+// Small icon
+		int icon_width = 40;
+		int icon_height = 40;
+		int icon_x = (144 / 2) - (icon_width / 2);
+		int icon_y = (168 * 3 / 4) - (icon_height / 2) - 10;
+// Large icon
+/*		
 		int icon_width = 60;
 		int icon_height = 60;
 		int icon_x = (144 / 2) - (icon_width / 2);
-		int icon_y = (168 * 3 / 4) - (icon_height / 2);
+		int icon_y = (168 * 3 / 4) - (icon_height / 2) - 30;
+		*/
 		bmp_init_container(WEATHER_ICONS[icon], &weather_layer->icon_layer);
 		layer_add_child(&weather_layer->layer, &weather_layer->icon_layer.layer.layer);
 		layer_set_frame(&weather_layer->icon_layer.layer.layer, GRect(icon_x, icon_y, icon_width, icon_height));

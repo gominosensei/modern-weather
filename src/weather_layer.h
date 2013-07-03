@@ -2,7 +2,9 @@
 #define WEATHER_LAYER_H
 
 #include "graph_layer.h"
+#include "build_config.h"
 
+#if LARGE_ICONS
 typedef enum {
 	WEATHER_ICON_CLEAR_DAY = 0,
 	WEATHER_ICON_CLEAR_NIGHT,
@@ -17,7 +19,8 @@ typedef enum {
 	WEATHER_ICON_NO_WEATHER,
 	WEATHER_ICON_COUNT
 } WeatherIcon;
-
+#endif
+	
 typedef struct {
 	Layer layer;
 	BmpContainer icon_layer;
