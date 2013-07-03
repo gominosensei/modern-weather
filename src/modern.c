@@ -1,7 +1,8 @@
 #include "pebble_os.h"
 #include "pebble_app.h"
 #include "pebble_fonts.h"
-
+#include "build_config.h"
+#include "lang.h"
 
 #define MY_UUID { 0x9B, 0x89, 0xF4, 0xB8, 0x2B, 0xEB, 0x4F, 0xBA, 0x9A, 0xE9, 0xAB, 0xA6, 0x6E, 0x45, 0xA7, 0xDA }
 PBL_APP_INFO(MY_UUID,
@@ -10,9 +11,6 @@ PBL_APP_INFO(MY_UUID,
              RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_WATCH_FACE);
 
-#include "build_config.h"
-#define HOUR_VIBRATION_START 8
-#define HOUR_VIBRATION_END 22
 
 Window window;
 BmpContainer background_image_container;
@@ -35,7 +33,6 @@ const GPathInfo MINUTE_HAND_PATH_POINTS = {
   }
 };
 
-
 const GPathInfo HOUR_HAND_PATH_POINTS = {
   4,
   (GPoint []) {
@@ -49,8 +46,6 @@ const GPathInfo HOUR_HAND_PATH_POINTS = {
 
 GPath hour_hand_path;
 GPath minute_hand_path;
-
-#include "lang.h"
 
 AppTimerHandle timer_handle;
 #define COOKIE_MY_TIMER 1
