@@ -2,11 +2,18 @@
 #include "pebble_app.h"
 #include "pebble_fonts.h"
 #include "build_config.h"
+// Modern includes	
 #include "lang.h"
+// Weather includes	
+#include "http.h"
+#include "util.h"
+#include "weather_layer.h"
+#include "constants.h"
+
 
 #define MY_UUID { 0x9B, 0x89, 0xF4, 0xB8, 0x2B, 0xEB, 0x4F, 0xBA, 0x9A, 0xE9, 0xAB, 0xA6, 0x6E, 0x45, 0xA7, 0xDA }
-PBL_APP_INFO(MY_UUID,
-             "ModernWeather", "gominosensei",
+PBL_APP_INFO(HTTP_UUID,
+             "Modern Weather", "gominosensei",
              1, 0, /* App version */
              RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_WATCH_FACE);
@@ -15,6 +22,7 @@ PBL_APP_INFO(MY_UUID,
 Window window;
 BmpContainer background_image_container;
 
+// Modern face
 Layer minute_display_layer;
 Layer hour_display_layer;
 Layer center_display_layer;
@@ -22,6 +30,52 @@ Layer second_display_layer;
 TextLayer date_layer;
 GFont date_font;
 static char date_text[] = "Wed 13";
+
+// Weather face
+static WeatherLayer weather_layer;
+static int our_latitude, our_longitude;
+static bool located;
+static uint8_t precip_forecast[60];
+static int8_t precip_forecast_index;
+void request_weather();
+void handle_timer(AppContextRef app_ctx, AppTimerHandle handle, uint32_t cookie);
+
+void failed(int32_t cookie, int http_status, void* context) {
+	if(cookie == 0 || cookie == WEATHER_HTTP_COOKIE) {
+		weather_layer_set_icon(&weather_layer, WEATHER_ICON_NO_WEATHER);
+	}
+}
+void success(int32_t cookie, int http_status, DictionaryIterator* received, void* context) {
+	if(cookie != WEATHER_HTTP_COOKIE) return;
+	Tuple* data_tuple = dict_find(received, WEATHER_KEY_CURRENT);
+	if(data_tuple) {
+		// The below bitwise dance is so we can actually fit our precipitation forecast.
+		uint16_t value = data_tuple->value->int16;
+		uint8_t icon = value >> 11;
+		if(icon < 10) {
+			weather_layer_set_icon(&weather_layer, icon);
+		} else {
+			weather_layer_set_icon(&weather_layer, WEATHER_ICON_NO_WEATHER);
+		}
+		int16_t temp = value & 0x3ff;
+		if(value & 0x400) temp = -temp;
+		weather_layer_set_temperature(&weather_layer, temp);
+	}
+	Tuple* forecast_tuple = dict_find(received, WEATHER_KEY_PRECIPITATION);
+	if(forecast_tuple) {
+		// It's going to rain!
+		memset(precip_forecast, 0, 60);
+		memcpy(precip_forecast, forecast_tuple->value->data, forecast_tuple->length > 60 ? 60 : forecast_tuple->length);
+		precip_forecast_index = 0;
+		weather_layer_set_precipitation_forecast(&weather_layer, precip_forecast, 60);
+	} else {
+		weather_layer_clear_precipitation_forecast(&weather_layer);
+	}
+}
+
+void reconnect(void* context) {
+	request_weather();
+}
 
 const GPathInfo MINUTE_HAND_PATH_POINTS = {
   4,
@@ -48,7 +102,6 @@ GPath hour_hand_path;
 GPath minute_hand_path;
 
 AppTimerHandle timer_handle;
-#define COOKIE_MY_TIMER 1
 #define ANIM_IDLE 0
 #define ANIM_START 1
 #define ANIM_HOURS 2
@@ -88,7 +141,10 @@ void handle_timer(AppContextRef ctx, AppTimerHandle handle, uint32_t cookie) {
     }
 #endif
   }
-
+  else if (cookie == COOKIE_WEATHER_TIMER) {
+	request_weather();
+	app_timer_send_event(ctx, REFRESH_WEATHER, COOKIE_WEATHER_TIMER);
+  }
 }
 
 #if DISPLAY_SECONDS && INVERTED
@@ -310,12 +366,28 @@ void draw_date(){
 }
 #endif
 
+	/*
+void set_weather_timer(AppContextRef ctx) {
+	app_timer_send_event(ctx, 1740000, COOKIE_WEATHER_TIMER);
+}*/
+
+void location(float latitude, float longitude, float altitude, float accuracy, void* context) {
+	// Fix the floats
+	our_latitude = latitude * 10000;
+	our_longitude = longitude * 10000;
+	located = true;
+	request_weather();
+//	set_weather_timer((AppContextRef)context);
+	app_timer_send_event((AppContextRef)context, REFRESH_WEATHER, COOKIE_WEATHER_TIMER);
+}
+
 void handle_init(AppContextRef ctx) {
   (void)ctx;
 
   window_init(&window, "Modern Watch");
   window_stack_push(&window, true /* Animated */);
   resource_init_current_app(&APP_RESOURCES);
+  window_set_fullscreen(&window, true);  // *msd 7/3/13
 
 #if DISPLAY_DATE_ANALOG
   bmp_init_container(RESOURCE_ID_IMAGE_BACKGROUND_DATEBOX, &background_image_container);
@@ -369,6 +441,23 @@ void handle_init(AppContextRef ctx) {
   second_display_layer.update_proc = &second_display_layer_update_callback;
   layer_add_child(&window.layer, &second_display_layer);
 #endif
+	
+	// Add weather layer
+	weather_layer_init(&weather_layer, GPoint(0, 100));
+	layer_add_child(&window.layer, &weather_layer.layer);
+	
+	http_register_callbacks((HTTPCallbacks){
+		.failure=failed,
+		.success=success,
+		.reconnect=reconnect,
+		.location=location
+	}, (void*)ctx);
+	
+	// Request weather
+	precip_forecast_index = -1;
+	located = false;
+	request_weather();
+
 }
 
 void handle_deinit(AppContextRef ctx) {
@@ -376,6 +465,7 @@ void handle_deinit(AppContextRef ctx) {
 
   bmp_deinit_container(&background_image_container);
   fonts_unload_custom_font(date_font);
+  weather_layer_deinit(&weather_layer);
 }
 
 void handle_tick(AppContextRef ctx, PebbleTickEvent *t){
@@ -418,7 +508,20 @@ void handle_tick(AppContextRef ctx, PebbleTickEvent *t){
   layer_mark_dirty(&second_display_layer);
 #endif
   }
+	
+  // Weather
+  if(precip_forecast_index >= 0) {
+		++precip_forecast_index;
+		if(precip_forecast_index > 60) {
+			weather_layer_clear_precipitation_forecast(&weather_layer);
+			precip_forecast_index = -1;
+		} else {
+			weather_layer_set_precipitation_forecast(&weather_layer, &precip_forecast[precip_forecast_index], 60 - precip_forecast_index);
+		}
+  }	
 }
+
+
 
 void pbl_main(void *params) {
   PebbleAppHandlers handlers = {
@@ -432,7 +535,35 @@ void pbl_main(void *params) {
 #else 
 			.tick_units = MINUTE_UNIT
 #endif
+		},
+	.messaging_info = {
+		.buffer_sizes = {
+			.inbound = 124,
+			.outbound = 256,
 		}
+	}
   };
   app_event_loop(params, &handlers);
+}
+
+void request_weather() {
+	if(!located) {
+		http_location_request();
+		return;
+	}
+	// Build the HTTP request
+	DictionaryIterator *body;
+	HTTPResult result = http_out_get("http://pwdb.kathar.in/pebble/weather3.php", WEATHER_HTTP_COOKIE, &body);
+	if(result != HTTP_OK) {
+		weather_layer_set_icon(&weather_layer, WEATHER_ICON_NO_WEATHER);
+		return;
+	}
+	dict_write_int32(body, WEATHER_KEY_LATITUDE, our_latitude);
+	dict_write_int32(body, WEATHER_KEY_LONGITUDE, our_longitude);
+	dict_write_cstring(body, WEATHER_KEY_UNIT_SYSTEM, UNIT_SYSTEM);
+	// Send it.
+	if(http_out_send() != HTTP_OK) {
+		weather_layer_set_icon(&weather_layer, WEATHER_ICON_NO_WEATHER);
+		return;
+	}
 }
