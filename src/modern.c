@@ -10,8 +10,8 @@
 #include "weather_layer.h"
 #include "constants.h"
 
-PBL_APP_INFO(HTTP_UUID, "b Modern Weather", "gominosensei",
-             1, 3, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
+PBL_APP_INFO(HTTP_UUID, "Modern Weather", "michael donnelly",
+             1, 4, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
 
 Window window;
 BmpContainer background_image_container;
