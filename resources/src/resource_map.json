@@ -1,0 +1,38 @@
+{
+    "media": [
+        {
+            "characterRegex": "[0-9]",
+            "defName": "FONT_ORBITRON_MEDIUM_12",
+            "type": "font",
+            "file": "fonts/orbitron-medium.otf"
+        },
+        {
+            "characterRegex": "[0-9. A-Z]",
+            "defName": "FONT_DIGITALDREAM_NARROW_12",
+            "type": "font",
+            "file": "fonts/DIGITALDREAMNARROW.ttf"
+        },
+        {
+            "defName": "IMAGE_MENU_ICON",
+            "type": "png",
+            "file": "images/modern_logo.png"
+        },
+        {
+            "defName": "IMAGE_BACKGROUND_DATEBOX",
+            "type": "png",
+            "file": "images/modern_background3.png"
+        },
+        {
+            "defName": "IMAGE_BACKGROUND_INVERTED",
+            "type": "png",
+            "file": "images/modern_background_new_inv.png"
+        },
+        {
+            "defName": "IMAGE_BACKGROUND",
+            "type": "png",
+            "file": "images/modern_background_new.png"
+        }
+    ],
+    "friendlyVersion": "VERSION",
+    "versionDefName": "APP_RESOURCES"
+}
