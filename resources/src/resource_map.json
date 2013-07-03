@@ -148,6 +148,16 @@
             "defName": "FONT_ORBITRON_MEDIUM_12",
             "type": "font",
             "file": "fonts/orbitron-medium.otf"
+        },
+        {
+            "defName": "ICON_PARTLY_CLOUDY_NIGHT_DARK_40",
+            "type": "png",
+            "file": "images/partly-cloudy-night-dark-40.png"
+        },
+        {
+            "defName": "ICON_PARTLY_CLOUDY_NIGHT_DARK",
+            "type": "png",
+            "file": "images/partly-cloudy-night-dark.png"
         }
     ],
     "friendlyVersion": "VERSION",
