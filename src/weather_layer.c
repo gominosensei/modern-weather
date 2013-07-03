@@ -23,13 +23,18 @@ void weather_layer_init(WeatherLayer* weather_layer, GPoint pos) {
 	// Add temperature layer
 	int temp_width = 64;   // *msd+5 7/3/13
 	int temp_height = 68;
-	int temp_x = (144 / 2) - (temp_width / 2);
-	int temp_y = (168 / 4) - (temp_height / 2);
+	int temp_x = (144 / 2) - (temp_width / 2) + 5;
+	int temp_y = (168 / 4) - (temp_height / 2) + 25;
 	text_layer_init(&weather_layer->temp_layer, GRect(temp_x, temp_y, temp_width, temp_height));
 //	text_layer_init(&weather_layer->temp_layer, GRect(70, 9, 64, 68));
 	text_layer_set_text_alignment(&weather_layer->temp_layer, GTextAlignmentCenter);
-	text_layer_set_font(&weather_layer->temp_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FUTURA_40)));
+	text_layer_set_font(&weather_layer->temp_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24));
+//	text_layer_set_font(&weather_layer->temp_layer, fonts_get_system_font(FONT_KEY_GOTHAM_30_BLACK));
+//	text_layer_set_font(&weather_layer->temp_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FUTURA_40)));
+	text_layer_set_background_color(&weather_layer->temp_layer, GColorClear);  // *msd+1 7/3/13
+	text_layer_set_text_color(&weather_layer->temp_layer, GColorWhite);
 	layer_add_child(&weather_layer->layer, &weather_layer->temp_layer.layer);
+	
 	// Note absence of icon layer
 	weather_layer->has_weather_icon = false;
 	

@@ -11,7 +11,7 @@
 #include "constants.h"
 
 PBL_APP_INFO(HTTP_UUID, "Modern Weather", "gominosensei",
-             1, 1, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
+             1, 2, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
 
 Window window;
 BmpContainer background_image_container;
