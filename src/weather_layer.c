@@ -4,6 +4,7 @@
 #include "util.h"
 #include "weather_layer.h"
 
+#if LARGE_ICONS
 static uint8_t WEATHER_ICONS[] = {
 	RESOURCE_ID_ICON_CLEAR_DAY,
 	RESOURCE_ID_ICON_CLEAR_NIGHT,
@@ -17,6 +18,21 @@ static uint8_t WEATHER_ICONS[] = {
 	RESOURCE_ID_ICON_PARTLY_CLOUDY_NIGHT,
 	RESOURCE_ID_ICON_ERROR,
 };
+#else
+static uint8_t WEATHER_ICONS[] = {
+	RESOURCE_ID_ICON_CLEAR_DAY_40,
+	RESOURCE_ID_ICON_CLEAR_NIGHT_40,
+	RESOURCE_ID_ICON_RAIN_40,
+	RESOURCE_ID_ICON_SNOW_40,
+	RESOURCE_ID_ICON_SLEET_40,
+	RESOURCE_ID_ICON_WIND_40,
+	RESOURCE_ID_ICON_FOG_40,
+	RESOURCE_ID_ICON_CLOUDY_40,
+	RESOURCE_ID_ICON_PARTLY_CLOUDY_DAY_40,
+	RESOURCE_ID_ICON_PARTLY_CLOUDY_NIGHT_40,
+	RESOURCE_ID_ICON_ERROR_40,
+};
+#endif
 
 void weather_layer_init(WeatherLayer* weather_layer, GPoint pos) {
 	layer_init(&weather_layer->layer, GRect(pos.x, pos.y, 144, 168));
@@ -69,18 +85,17 @@ void weather_layer_set_icon(WeatherLayer* weather_layer, WeatherIcon icon) {
 			bmp_deinit_container(&weather_layer->icon_layer);
 			weather_layer->has_weather_icon = false;
 		}
-// Small icon
-		int icon_width = 40;
-		int icon_height = 40;
-		int icon_x = (144 / 2) - (icon_width / 2);
-		int icon_y = (168 * 3 / 4) - (icon_height / 2) - 10;
-// Large icon
-/*		
+#if LARGE_ICONS		
 		int icon_width = 60;
 		int icon_height = 60;
 		int icon_x = (144 / 2) - (icon_width / 2);
 		int icon_y = (168 * 3 / 4) - (icon_height / 2) - 30;
-		*/
+#else
+		int icon_width = 40;
+		int icon_height = 40;
+		int icon_x = (144 / 2) - (icon_width / 2);
+		int icon_y = (168 * 3 / 4) - (icon_height / 2) - 10;
+#endif
 		bmp_init_container(WEATHER_ICONS[icon], &weather_layer->icon_layer);
 		layer_add_child(&weather_layer->layer, &weather_layer->icon_layer.layer.layer);
 		layer_set_frame(&weather_layer->icon_layer.layer.layer, GRect(icon_x, icon_y, icon_width, icon_height));
