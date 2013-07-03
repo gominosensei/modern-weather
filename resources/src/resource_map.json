@@ -87,6 +87,61 @@
             "type": "png",
             "file": "images/clear-day.png"
         },
+            {
+            "defName": "ICON_WIND_40",
+            "type": "png",
+            "file": "images/wind-40.png"
+        },
+        {
+            "defName": "ICON_ERROR_40",
+            "type": "png",
+            "file": "images/error-40.png"
+        },
+        {
+            "defName": "ICON_PARTLY_CLOUDY_NIGHT_40",
+            "type": "png",
+            "file": "images/partly-cloudy-night-40.png"
+        },
+        {
+            "defName": "ICON_PARTLY_CLOUDY_DAY_40",
+            "type": "png",
+            "file": "images/partly-cloudy-day-40.png"
+        },
+        {
+            "defName": "ICON_CLOUDY_40",
+            "type": "png",
+            "file": "images/cloudy-40.png"
+        },
+        {
+            "defName": "ICON_FOG_40",
+            "type": "png",
+            "file": "images/fog-40.png"
+        },
+        {
+            "defName": "ICON_SLEET_40",
+            "type": "png",
+            "file": "images/sleet-40.png"
+        },
+        {
+            "defName": "ICON_SNOW_40",
+            "type": "png",
+            "file": "images/snow-40.png"
+        },
+        {
+            "defName": "ICON_RAIN_40",
+            "type": "png",
+            "file": "images/rain-40.png"
+        },
+        {
+            "defName": "ICON_CLEAR_NIGHT_40",
+            "type": "png",
+            "file": "images/clear-night-40.png"
+        },
+        {
+            "defName": "ICON_CLEAR_DAY_40",
+            "type": "png",
+            "file": "images/clear-day-40.png"
+        },
         {
             "trackingAdjust": -4,
             "characterRegex": "[0-9:\u00b0-]",
