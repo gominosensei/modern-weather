@@ -11,7 +11,7 @@
 #include "constants.h"
 
 PBL_APP_INFO(HTTP_UUID, "Modern Weather", "michael donnelly",
-             1, 4, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
+             1, 6, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
 
 Window window;
 BmpContainer background_image_container;
@@ -36,7 +36,8 @@ void handle_timer(AppContextRef app_ctx, AppTimerHandle handle, uint32_t cookie)
 
 void failed(int32_t cookie, int http_status, void* context) {
 	if(cookie == 0 || cookie == WEATHER_HTTP_COOKIE) {
-		weather_layer_set_icon(&weather_layer, WEATHER_ICON_NO_WEATHER);
+		// *msd 7/4/13 Don't show an error icon - just leave it blank
+		//weather_layer_set_icon(&weather_layer, WEATHER_ICON_NO_WEATHER);
 	}
 }
 void success(int32_t cookie, int http_status, DictionaryIterator* received, void* context) {
@@ -275,7 +276,7 @@ void minute_display_layer_update_callback(Layer *me, GContext* ctx) {
 
 
 #if INVERTED
-  graphics_context_set_fill_color(ctx, GColorBlack);
+  graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_context_set_stroke_color(ctx, GColorWhite);
 #else
   graphics_context_set_fill_color(ctx, GColorWhite);
@@ -319,7 +320,7 @@ void hour_display_layer_update_callback(Layer *me, GContext* ctx) {
   gpath_rotate_to(&hour_hand_path, (TRIG_MAX_ANGLE / 360) * angle);
 
 #if INVERTED
-  graphics_context_set_fill_color(ctx, GColorBlack);
+  graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_context_set_stroke_color(ctx, GColorWhite);
 #else
   graphics_context_set_fill_color(ctx, GColorWhite);
@@ -553,7 +554,8 @@ void request_weather() {
 	}
 	// Build the HTTP request
 	DictionaryIterator *body;
-	HTTPResult result = http_out_get("http://pwdb.kathar.in/pebble/weather3.php", WEATHER_HTTP_COOKIE, &body);
+	HTTPResult result = http_out_get(WEATHER_SERVICE_URL, WEATHER_HTTP_COOKIE, &body);  // *msd 7/3/13
+//	HTTPResult result = http_out_get("http://pwdb.kathar.in/pebble/weather3.php", WEATHER_HTTP_COOKIE, &body);
 	if(result != HTTP_OK) {
 		weather_layer_set_icon(&weather_layer, WEATHER_ICON_NO_WEATHER);
 		return;

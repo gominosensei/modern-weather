@@ -10,5 +10,8 @@
 // Weather
 // "us" for Farenheit; "uk", "ca" or "si" for Celsius,
 // "auto" (determined by the user's location)
-#define UNIT_SYSTEM "auto"
+#define UNIT_SYSTEM "us"
 #define LARGE_ICONS false
+//#define WEATHER_SERVICE_URL "http://robothijinks.com/weather/weather3.php"
+#define WEATHER_SERVICE_URL "http://pwdb.kathar.in/pebble/weather3.php"
+// reference implementation: "http://pwdb.kathar.in/pebble/weather3.php"
