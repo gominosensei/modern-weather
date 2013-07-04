@@ -11,7 +11,7 @@
 #include "constants.h"
 
 PBL_APP_INFO(HTTP_UUID, "Modern Weather", "michael donnelly",
-             1, 6, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
+             1, 7, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
 
 Window window;
 BmpContainer background_image_container;
@@ -73,7 +73,7 @@ void reconnect(void* context) {
 }
 
 const GPathInfo MINUTE_HAND_PATH_POINTS = {
-  4,
+  3,
   (GPoint []) {
     {-4, 15},
     {4, 15},
@@ -83,7 +83,7 @@ const GPathInfo MINUTE_HAND_PATH_POINTS = {
 };
 
 const GPathInfo HOUR_HAND_PATH_POINTS = {
-  4,
+  3,
   (GPoint []) {
     {-4, 15},
     {4, 15},
@@ -441,7 +441,7 @@ void handle_init(AppContextRef ctx) {
 
   gpath_init(&hour_hand_path, &HOUR_HAND_PATH_POINTS);
   gpath_move_to(&hour_hand_path, grect_center_point(&hour_display_layer.frame));
-
+	
   layer_init(&minute_display_layer, window.layer.frame);
   minute_display_layer.update_proc = &minute_display_layer_update_callback;
   layer_add_child(&window.layer, &minute_display_layer);
