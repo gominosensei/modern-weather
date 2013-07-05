@@ -13,4 +13,12 @@
 #define COOKIE_WEATHER_TIMER 2
 #define REFRESH_WEATHER 1740000 // 15 minutes in seconds
 
-	
+static const char* const DAYS[] = {
+"SUN", /* Sun */
+"MON", /* Mon */
+"TUE", /* Tue */
+"WED", /* Wed */
+"THU", /* Thu */
+"FRI", /* Fri */
+"SAT", /* Sat */
+};	

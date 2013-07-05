@@ -2,8 +2,6 @@
 #include "pebble_app.h"
 #include "pebble_fonts.h"
 #include "build_config.h"
-// Modern includes	
-#include "lang.h"
 // Weather includes	
 #include "http.h"
 #include "util.h"
@@ -73,7 +71,7 @@ void reconnect(void* context) {
 }
 
 const GPathInfo MINUTE_HAND_PATH_POINTS = {
-  3,
+  3,  // *msd 7/4/13 Was 4 - this made the hands more pointy
   (GPoint []) {
     {-4, 15},
     {4, 15},
@@ -83,7 +81,7 @@ const GPathInfo MINUTE_HAND_PATH_POINTS = {
 };
 
 const GPathInfo HOUR_HAND_PATH_POINTS = {
-  3,
+  3,  // *msd 7/4/13 
   (GPoint []) {
     {-4, 15},
     {4, 15},

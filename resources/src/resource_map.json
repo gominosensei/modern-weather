@@ -1,13 +1,6 @@
 {
     "media": [
         {
-            "trackingAdjust": -4,
-            "characterRegex": "[0-9:\u00b0-]",
-            "defName": "FUTURA_40",
-            "type": "font",
-            "file": "fonts/futura.ttf"
-        },
-        {
             "defName": "IMAGE_BACKGROUND",
             "type": "png",
             "file": "images/modern_background_new.png"
@@ -85,11 +78,6 @@
             "file": "images/partly-cloudy-night-dark-40.png"
         },
         {
-            "defName": "ICON_ERROR_DARK_40",
-            "type": "png",
-            "file": "images/error-dark-40.png"
-        },
-        {
             "defName": "ICON_WIND_DARK_40",
             "type": "png",
             "file": "images/wind-dark-40.png"
@@ -138,11 +126,6 @@
             "defName": "ICON_PARTLY_CLOUDY_NIGHT_DARK",
             "type": "png",
             "file": "images/partly-cloudy-night-dark.png"
-        },
-        {
-            "defName": "ICON_ERROR_DARK",
-            "type": "png",
-            "file": "images/error-dark.png"
         },
         {
             "defName": "ICON_WIND_DARK",
